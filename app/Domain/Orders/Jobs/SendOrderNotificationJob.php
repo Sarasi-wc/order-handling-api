@@ -15,8 +15,8 @@ class SendOrderNotificationJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    protected Order $order;
-    protected string $type;
+    public Order $order;
+    public string $type;
 
     /**
      * Create a new job instance
