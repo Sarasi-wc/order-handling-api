@@ -11,22 +11,27 @@ class ImportOrdersCommand extends Command
     protected $signature = 'orders:import {file}';
     protected $description = 'Import orders from a CSV file and queue them for processing';
 
-    public function handle()
+    public function handle(): void
     {
         $path = $this->argument('file');
 
-        if (! file_exists($path)) {
-            $this->error("File not found: {$path}");
+        $resolvedPath = file_exists($path)
+            ? $path
+            : storage_path('app/' . ltrim($path, '/'));
+
+        if (! file_exists($resolvedPath)) {
+            $this->error("File not found: {$resolvedPath}");
             return;
         }
 
-        $this->info("Importing orders from {$path}...");
+        $this->info("Importing orders from {$resolvedPath}...");
 
-        $csv = Reader::createFromPath($path)->setHeaderOffset(0);
+        $csv = Reader::createFromPath($resolvedPath)->setHeaderOffset(0);
         $records = collect(iterator_to_array($csv->getRecords()));
 
-        $records->chunk(100)->each(function ($chunk) {
+        $records->chunk(100)->each(function ($chunk, $i) {
             ImportOrdersJob::dispatch($chunk->toArray());
+            $this->info("Queued chunk #{$i} (" . count($chunk) . " rows)");
         });
 
         $this->info('Orders queued for import successfully!');
