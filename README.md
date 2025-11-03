@@ -26,7 +26,7 @@ This system implements a comprehensive order handling workflow using Domain-Driv
 - **Laravel 11.x** - PHP framework
 - **Laravel Horizon** - Queue monitoring and management
 - **Redis** - High-performance caching and analytics
-- **MySQL/PostgreSQL** - Relational database
+- **MySQL** - Relational database
 - **PHPUnit** - Testing framework
 
 ---
