@@ -17,6 +17,14 @@ class LeaderboardService
     }
 
     /**
+     * Decrement customer's total spending (for refunds)
+     */
+    public function decrementCustomerSpending(string $email, float $amount): void
+    {
+        Redis::zincrby(self::LEADERBOARD_KEY, -$amount, $email);
+    }
+
+    /**
      * Get top N customers by spending
      */
     public function getTopCustomers(int $limit = 10): array
