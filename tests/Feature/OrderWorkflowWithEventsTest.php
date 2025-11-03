@@ -165,7 +165,6 @@ class OrderWorkflowWithEventsTest extends TestCase
          * Completed event should only fire for completed orders
          * Failed orders use OrderFailed event which doesn't update KPIs
          **/
-
         $kpis = $kpiService->getDailyKPIs(now());
         $this->assertEquals(0, $kpis['revenue']);
         $this->assertEquals(0, $kpis['order_count']);
