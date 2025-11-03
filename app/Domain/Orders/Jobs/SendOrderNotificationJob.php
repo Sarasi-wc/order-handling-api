@@ -16,6 +16,7 @@ class SendOrderNotificationJob implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     public Order $order;
+
     public string $type;
 
     /**
@@ -50,7 +51,7 @@ class SendOrderNotificationJob implements ShouldQueue
             ]);
 
             // Log the notification (in production, send email here)
-            Log::info("Order notification sent", [
+            Log::info('Order notification sent', [
                 'type' => $this->type,
                 'order_id' => $this->order->order_id,
                 'customer' => $this->order->customer_email,
@@ -61,7 +62,7 @@ class SendOrderNotificationJob implements ShouldQueue
             // In a real application, send email notification here:
             // Mail::to($this->order->customer_email)->send(new OrderNotificationMail($this->order, $this->type));
         } catch (\Exception $e) {
-            Log::error("Failed to send order notification", [
+            Log::error('Failed to send order notification', [
                 'order_id' => $this->order->order_id,
                 'type' => $this->type,
                 'error' => $e->getMessage(),
@@ -96,7 +97,7 @@ class SendOrderNotificationJob implements ShouldQueue
      */
     public function failed(\Throwable $exception): void
     {
-        Log::error("Order notification job failed", [
+        Log::error('Order notification job failed', [
             'order_id' => $this->order->order_id,
             'type' => $this->type,
             'error' => $exception->getMessage(),

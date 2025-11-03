@@ -17,7 +17,7 @@ class RefundFactory extends Factory
 
         return [
             'order_id' => Order::factory(),
-            'refund_reference' => 'REF-' . strtoupper($this->faker->unique()->lexify('??????')),
+            'refund_reference' => 'REF-'.strtoupper($this->faker->unique()->lexify('??????')),
             'type' => $type,
             'amount' => $amount,
             'reason' => $this->faker->sentence(),

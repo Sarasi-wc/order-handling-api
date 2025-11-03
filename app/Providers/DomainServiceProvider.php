@@ -33,13 +33,8 @@ class DomainServiceProvider extends ServiceProvider
         ]);
 
         // Register event listeners
-        Event::listen(OrderCompleted::class, [
-            UpdateKPIMetrics::class,
-            SendOrderCompletedNotification::class,
-        ]);
-
-        Event::listen(OrderFailed::class, [
-            SendOrderFailedNotification::class,
-        ]);
+        Event::listen(OrderCompleted::class, UpdateKPIMetrics::class);
+        Event::listen(OrderCompleted::class, SendOrderCompletedNotification::class);
+        Event::listen(OrderFailed::class, SendOrderFailedNotification::class);
     }
 }

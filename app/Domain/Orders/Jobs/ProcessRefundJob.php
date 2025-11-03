@@ -16,11 +16,15 @@ class ProcessRefundJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    protected Order $order;
-    protected string $refundReference;
-    protected string $type;
-    protected float $amount;
-    protected ?string $reason;
+    public Order $order;
+
+    public string $refundReference;
+
+    public string $type;
+
+    public float $amount;
+
+    public ?string $reason;
 
     /**
      * Create a new job instance
@@ -56,7 +60,7 @@ class ProcessRefundJob implements ShouldQueue
                 $this->reason
             );
 
-            Log::info("Refund processed successfully", [
+            Log::info('Refund processed successfully', [
                 'refund_id' => $refund->id,
                 'refund_reference' => $this->refundReference,
                 'order_id' => $this->order->order_id,
@@ -65,7 +69,7 @@ class ProcessRefundJob implements ShouldQueue
                 'customer' => $this->order->customer_email,
             ]);
         } catch (DomainException $e) {
-            Log::warning("Refund processing failed - domain validation error", [
+            Log::warning('Refund processing failed - domain validation error', [
                 'order_id' => $this->order->order_id,
                 'refund_reference' => $this->refundReference,
                 'error' => $e->getMessage(),
@@ -74,7 +78,7 @@ class ProcessRefundJob implements ShouldQueue
             // Don't retry domain validation errors
             $this->fail($e);
         } catch (\Exception $e) {
-            Log::error("Refund processing failed - unexpected error", [
+            Log::error('Refund processing failed - unexpected error', [
                 'order_id' => $this->order->order_id,
                 'refund_reference' => $this->refundReference,
                 'error' => $e->getMessage(),
@@ -90,7 +94,7 @@ class ProcessRefundJob implements ShouldQueue
      */
     public function failed(\Throwable $exception): void
     {
-        Log::error("Refund job failed permanently", [
+        Log::error('Refund job failed permanently', [
             'order_id' => $this->order->order_id,
             'refund_reference' => $this->refundReference,
             'error' => $exception->getMessage(),

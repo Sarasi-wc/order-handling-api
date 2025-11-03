@@ -24,7 +24,7 @@ class OrderNotificationTest extends TestCase
         $order = Order::factory()->create(['status' => 'completed']);
 
         // Manually dispatch the listener
-        $listener = new \App\Domain\Orders\Listeners\SendOrderCompletedNotification();
+        $listener = new \App\Domain\Orders\Listeners\SendOrderCompletedNotification;
         $listener->handle(new OrderCompleted($order));
 
         Queue::assertPushed(SendOrderNotificationJob::class, function ($job) use ($order) {
@@ -40,7 +40,7 @@ class OrderNotificationTest extends TestCase
         $order = Order::factory()->create(['status' => 'failed']);
 
         // Manually dispatch the listener
-        $listener = new \App\Domain\Orders\Listeners\SendOrderFailedNotification();
+        $listener = new \App\Domain\Orders\Listeners\SendOrderFailedNotification;
         $listener->handle(new OrderFailed($order));
 
         Queue::assertPushed(SendOrderNotificationJob::class, function ($job) use ($order) {

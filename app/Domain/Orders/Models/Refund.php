@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class Refund extends Model
 {
     use HasFactory;
+
     protected $fillable = [
         'order_id',
         'refund_reference',

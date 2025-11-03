@@ -42,7 +42,7 @@ class ProcessRefund
         }
 
         // Validate refund type
-        if (!in_array($type, ['full', 'partial'])) {
+        if (! in_array($type, ['full', 'partial'])) {
             throw new DomainException("Invalid refund type: $type. Must be 'full' or 'partial'.");
         }
 
