@@ -3,11 +3,14 @@
 namespace App\Domain\Orders\Models;
 
 use App\Domain\Orders\Enums\OrderStatus;
+use Database\Factories\OrderFactory;
 use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Order extends Model
 {
+    use HasFactory;
     protected $fillable = [
         'order_id',
         'customer_name',
@@ -50,5 +53,13 @@ class Order extends Model
     protected function totalAmount(): Attribute
     {
         return Attribute::get(fn() => $this->quantity * $this->unit_price);
+    }
+
+    /**
+     * @return OrderFactory
+     */
+    protected static function newFactory(): OrderFactory
+    {
+        return \Database\Factories\OrderFactory::new();
     }
 }
