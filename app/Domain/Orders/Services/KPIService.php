@@ -106,6 +106,20 @@ class KPIService
     }
 
     /**
+     * Record a refund for KPI tracking (decrement revenue)
+     */
+    public function recordRefund(Carbon $date, float $amount): void
+    {
+        $key = $this->getKeyForDate($date);
+
+        // Decrement revenue atomically (negative increment)
+        Redis::hincrbyfloat($key, 'revenue', -$amount);
+
+        // Set expiry to 90 days
+        Redis::expire($key, 60 * 60 * 24 * 90);
+    }
+
+    /**
      * Generate Redis key for a specific date
      */
     private function getKeyForDate(Carbon $date): string
