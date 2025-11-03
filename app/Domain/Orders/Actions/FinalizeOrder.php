@@ -3,6 +3,7 @@
 namespace App\Domain\Orders\Actions;
 
 use App\Domain\Orders\Enums\OrderStatus;
+use App\Domain\Orders\Events\OrderCompleted;
 use App\Domain\Orders\Models\Order;
 use DomainException;
 
@@ -16,6 +17,9 @@ class FinalizeOrder
 
         $order->update([
             'status' => OrderStatus::COMPLETED,
+            'completed_at' => now(),
         ]);
+
+        event(new OrderCompleted($order));
     }
 }

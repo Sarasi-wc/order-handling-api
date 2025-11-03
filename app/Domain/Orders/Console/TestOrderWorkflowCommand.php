@@ -2,14 +2,18 @@
 
 namespace App\Domain\Orders\Console;
 
-use Illuminate\Console\Command;
-use App\Domain\Orders\Models\Order;
+use App\Domain\Orders\Actions\FinalizeOrder;
+use App\Domain\Orders\Actions\ReserveStock;
+use App\Domain\Orders\Actions\RollbackOrder;
+use App\Domain\Orders\Actions\SimulatePayment;
 use App\Domain\Orders\Enums\OrderStatus;
-use App\Domain\Orders\Actions\{ReserveStock, SimulatePayment, FinalizeOrder, RollbackOrder};
+use App\Domain\Orders\Models\Order;
+use Illuminate\Console\Command;
 
 class TestOrderWorkflowCommand extends Command
 {
     protected $signature = 'orders:order-workflow';
+
     protected $description = 'Test the order workflow actions manually';
 
     public function handle(): void

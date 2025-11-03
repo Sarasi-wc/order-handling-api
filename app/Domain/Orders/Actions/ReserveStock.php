@@ -3,6 +3,7 @@
 namespace App\Domain\Orders\Actions;
 
 use App\Domain\Orders\Enums\OrderStatus;
+use App\Domain\Orders\Events\OrderReserved;
 use App\Domain\Orders\Models\Order;
 use DomainException;
 
@@ -18,5 +19,7 @@ class ReserveStock
             'reserved_stock' => true,
             'status' => OrderStatus::RESERVED,
         ]);
+
+        event(new OrderReserved($order));
     }
 }

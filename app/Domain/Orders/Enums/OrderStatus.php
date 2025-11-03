@@ -12,7 +12,7 @@ enum OrderStatus: string
 
     public function isFinal(): bool
     {
-        return match($this) {
+        return match ($this) {
             self::COMPLETED, self::FAILED => true,
             default => false,
         };

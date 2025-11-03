@@ -2,10 +2,11 @@
 
 namespace App\Domain\Orders\Actions;
 
-use App\Domain\Orders\Models\Order;
 use App\Domain\Orders\Enums\OrderStatus;
-use Illuminate\Support\Facades\Log;
+use App\Domain\Orders\Events\OrderPaid;
+use App\Domain\Orders\Models\Order;
 use Exception;
+use Illuminate\Support\Facades\Log;
 
 class SimulatePayment
 {
@@ -20,10 +21,12 @@ class SimulatePayment
 
         // Update order with a payment reference and mark as paid
         $order->update([
-            'payment_reference' => 'PAY-' . strtoupper(uniqid()),
+            'payment_reference' => 'PAY-'.strtoupper(uniqid()),
             'status' => OrderStatus::PAID,
         ]);
 
         Log::info("Payment simulated successfully for Order #{$order->order_id}");
+
+        event(new OrderPaid($order));
     }
 }

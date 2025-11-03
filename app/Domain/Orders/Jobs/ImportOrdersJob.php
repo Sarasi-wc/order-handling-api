@@ -2,29 +2,23 @@
 
 namespace App\Domain\Orders\Jobs;
 
+use App\Domain\Orders\Enums\OrderStatus;
+use App\Domain\Orders\Models\Order;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use App\Domain\Orders\Models\Order;
-use App\Domain\Orders\Enums\OrderStatus;
-use App\Domain\Orders\Jobs\ProcessOrderWorkflowJob;
 use Illuminate\Support\Facades\DB;
 
 class ImportOrdersJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    /**
-     * @var array
-     */
     protected array $orders;
 
     /**
      * Create a new job instance.
-     *
-     * @param array $orders
      */
     public function __construct(array $orders)
     {

@@ -197,12 +197,37 @@ return [
     */
 
     'defaults' => [
-        'supervisor-1' => [
+        'orders-supervisor' => [
+            'connection' => 'redis',
+            'queue' => ['orders'],
+            'balance' => 'auto',
+            'autoScalingStrategy' => 'time',
+            'maxProcesses' => 5,
+            'maxTime' => 0,
+            'maxJobs' => 1000,
+            'memory' => 256,
+            'tries' => 3,
+            'timeout' => 300,
+            'nice' => 0,
+        ],
+        'kpi-supervisor' => [
+            'connection' => 'redis',
+            'queue' => ['kpi'],
+            'balance' => 'simple',
+            'maxProcesses' => 2,
+            'maxTime' => 0,
+            'maxJobs' => 0,
+            'memory' => 128,
+            'tries' => 2,
+            'timeout' => 60,
+            'nice' => 0,
+        ],
+        'default-supervisor' => [
             'connection' => 'redis',
             'queue' => ['default'],
             'balance' => 'auto',
             'autoScalingStrategy' => 'time',
-            'maxProcesses' => 1,
+            'maxProcesses' => 3,
             'maxTime' => 0,
             'maxJobs' => 0,
             'memory' => 128,
@@ -214,7 +239,15 @@ return [
 
     'environments' => [
         'production' => [
-            'supervisor-1' => [
+            'orders-supervisor' => [
+                'maxProcesses' => 20,
+                'balanceMaxShift' => 5,
+                'balanceCooldown' => 3,
+            ],
+            'kpi-supervisor' => [
+                'maxProcesses' => 3,
+            ],
+            'default-supervisor' => [
                 'maxProcesses' => 10,
                 'balanceMaxShift' => 1,
                 'balanceCooldown' => 3,
@@ -222,8 +255,14 @@ return [
         ],
 
         'local' => [
-            'supervisor-1' => [
+            'orders-supervisor' => [
                 'maxProcesses' => 3,
+            ],
+            'kpi-supervisor' => [
+                'maxProcesses' => 1,
+            ],
+            'default-supervisor' => [
+                'maxProcesses' => 2,
             ],
         ],
     ],

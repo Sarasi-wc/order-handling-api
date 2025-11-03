@@ -2,13 +2,11 @@
 
 namespace App\Domain\Orders\Jobs;
 
+use App\Domain\Orders\Actions\FinalizeOrder;
+use App\Domain\Orders\Actions\ReserveStock;
+use App\Domain\Orders\Actions\RollbackOrder;
+use App\Domain\Orders\Actions\SimulatePayment;
 use App\Domain\Orders\Models\Order;
-use App\Domain\Orders\Actions\{
-    ReserveStock,
-    SimulatePayment,
-    FinalizeOrder,
-    RollbackOrder
-};
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -25,8 +23,14 @@ class ProcessOrderWorkflowJob implements ShouldQueue
     public function __construct(Order $order)
     {
         $this->order = $order;
+
+        // Set the queue
+        $this->onQueue('orders');
     }
 
+    /**
+     * @throws Throwable
+     */
     public function handle(
         ReserveStock $reserveStock,
         SimulatePayment $simulatePayment,

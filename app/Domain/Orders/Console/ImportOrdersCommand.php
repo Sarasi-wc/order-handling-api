@@ -2,13 +2,14 @@
 
 namespace App\Domain\Orders\Console;
 
-use Illuminate\Console\Command;
 use App\Domain\Orders\Jobs\ImportOrdersJob;
+use Illuminate\Console\Command;
 use League\Csv\Reader;
 
 class ImportOrdersCommand extends Command
 {
     protected $signature = 'orders:import {file}';
+
     protected $description = 'Import orders from a CSV file and queue them for processing';
 
     public function handle(): void
@@ -17,10 +18,11 @@ class ImportOrdersCommand extends Command
 
         $resolvedPath = file_exists($path)
             ? $path
-            : storage_path('app/' . ltrim($path, '/'));
+            : storage_path('app/'.ltrim($path, '/'));
 
         if (! file_exists($resolvedPath)) {
             $this->error("File not found: {$resolvedPath}");
+
             return;
         }
 
@@ -31,7 +33,7 @@ class ImportOrdersCommand extends Command
 
         $records->chunk(100)->each(function ($chunk, $i) {
             ImportOrdersJob::dispatch($chunk->toArray());
-            $this->info("Queued chunk #{$i} (" . count($chunk) . " rows)");
+            $this->info("Queued chunk #{$i} (".count($chunk).' rows)');
         });
 
         $this->info('Orders queued for import successfully!');

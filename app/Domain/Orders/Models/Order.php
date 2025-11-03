@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Model;
 class Order extends Model
 {
     use HasFactory;
+
     protected $fillable = [
         'order_id',
         'customer_name',
@@ -22,13 +23,18 @@ class Order extends Model
         'payment_method',
         'order_date',
         'status',
+        'reserved_stock',
+        'payment_reference',
+        'completed_at',
     ];
 
     protected $casts = [
-        'quantity'    => 'integer',
-        'unit_price'  => 'float',
-        'order_date'  => 'datetime',
-        'status'      => OrderStatus::class, // Enum cast
+        'quantity' => 'integer',
+        'unit_price' => 'float',
+        'order_date' => 'datetime',
+        'completed_at' => 'datetime',
+        'reserved_stock' => 'boolean',
+        'status' => OrderStatus::class, // Enum cast
     ];
 
     /**
@@ -36,7 +42,7 @@ class Order extends Model
      */
     protected function isCompleted(): Attribute
     {
-        return Attribute::get(fn() => $this->status === OrderStatus::COMPLETED);
+        return Attribute::get(fn () => $this->status === OrderStatus::COMPLETED);
     }
 
     /**
@@ -52,12 +58,9 @@ class Order extends Model
      */
     protected function totalAmount(): Attribute
     {
-        return Attribute::get(fn() => $this->quantity * $this->unit_price);
+        return Attribute::get(fn () => $this->quantity * $this->unit_price);
     }
 
-    /**
-     * @return OrderFactory
-     */
     protected static function newFactory(): OrderFactory
     {
         return \Database\Factories\OrderFactory::new();
