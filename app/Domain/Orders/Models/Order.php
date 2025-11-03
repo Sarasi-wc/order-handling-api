@@ -63,6 +63,6 @@ class Order extends Model
 
     protected static function newFactory(): OrderFactory
     {
-        return \Database\Factories\OrderFactory::new();
+        return OrderFactory::new();
     }
 }
