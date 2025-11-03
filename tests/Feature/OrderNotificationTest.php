@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Domain\Orders\Events\OrderCompleted;
 use App\Domain\Orders\Events\OrderFailed;
 use App\Domain\Orders\Jobs\SendOrderNotificationJob;
+use App\Domain\Orders\Listeners\SendOrderCompletedNotification;
 use App\Domain\Orders\Models\Order;
 use App\Domain\Orders\Models\OrderNotification;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -23,8 +24,8 @@ class OrderNotificationTest extends TestCase
 
         $order = Order::factory()->create(['status' => 'completed']);
 
-        // Manually dispatch the listener
-        $listener = new \App\Domain\Orders\Listeners\SendOrderCompletedNotification;
+        // Dispatch the listener
+        $listener = new SendOrderCompletedNotification;
         $listener->handle(new OrderCompleted($order));
 
         Queue::assertPushed(SendOrderNotificationJob::class, function ($job) use ($order) {

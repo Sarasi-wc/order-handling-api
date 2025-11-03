@@ -21,7 +21,7 @@ class OrderWorkflowTest extends TestCase
 
         (new ReserveStock)->execute($order);
 
-        // Payment may fail randomly (30% chance), so handle both cases
+        // Payment may fail randomly (30% chance), therefore handle both cases
         try {
             (new SimulatePayment)->execute($order);
             (new FinalizeOrder)->execute($order);

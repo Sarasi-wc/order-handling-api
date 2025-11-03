@@ -2,8 +2,10 @@
 
 namespace Tests\Feature;
 
+use App\Domain\Orders\Actions\FinalizeOrder;
 use App\Domain\Orders\Enums\OrderStatus;
 use App\Domain\Orders\Events\OrderCompleted;
+use App\Domain\Orders\Listeners\UpdateKPIMetrics;
 use App\Domain\Orders\Models\Order;
 use App\Domain\Orders\Services\KPIService;
 use App\Domain\Orders\Services\LeaderboardService;
@@ -40,7 +42,7 @@ class OrderWorkflowWithEventsTest extends TestCase
             'unit_price' => 50.00,
         ]);
 
-        $finalizeOrder = new \App\Domain\Orders\Actions\FinalizeOrder;
+        $finalizeOrder = new FinalizeOrder;
         $finalizeOrder->execute($order);
 
         Event::assertDispatched(OrderCompleted::class, function ($event) use ($order) {
@@ -60,13 +62,13 @@ class OrderWorkflowWithEventsTest extends TestCase
             'completed_at' => now(),
         ]);
 
-        // Manually trigger the event since we're not using queues
+        // Trigger the event manually since we're not using queues
         $event = new OrderCompleted($order);
         $kpiService = new KPIService;
         $leaderboardService = new LeaderboardService;
 
         // Simulate what the listener would do
-        $listener = new \App\Domain\Orders\Listeners\UpdateKPIMetrics($kpiService, $leaderboardService);
+        $listener = new UpdateKPIMetrics($kpiService, $leaderboardService);
         $listener->handle($event);
 
         // Verify KPIs were updated
@@ -93,7 +95,7 @@ class OrderWorkflowWithEventsTest extends TestCase
         $kpiService = new KPIService;
         $leaderboardService = new LeaderboardService;
 
-        $listener = new \App\Domain\Orders\Listeners\UpdateKPIMetrics($kpiService, $leaderboardService);
+        $listener = new UpdateKPIMetrics($kpiService, $leaderboardService);
         $listener->handle($event);
 
         // Verify leaderboard was updated
@@ -108,7 +110,7 @@ class OrderWorkflowWithEventsTest extends TestCase
 
         $kpiService = new KPIService;
         $leaderboardService = new LeaderboardService;
-        $listener = new \App\Domain\Orders\Listeners\UpdateKPIMetrics($kpiService, $leaderboardService);
+        $listener = new UpdateKPIMetrics($kpiService, $leaderboardService);
 
         $orders = [
             ['email' => 'alice@example.com', 'quantity' => 2, 'price' => 50.00],
@@ -159,8 +161,10 @@ class OrderWorkflowWithEventsTest extends TestCase
             'unit_price' => 50.00,
         ]);
 
-        // Completed event should only fire for completed orders
-        // Failed orders use OrderFailed event which doesn't update KPIs
+        /**
+         * Completed event should only fire for completed orders
+         * Failed orders use OrderFailed event which doesn't update KPIs
+         **/
 
         $kpis = $kpiService->getDailyKPIs(now());
         $this->assertEquals(0, $kpis['revenue']);
