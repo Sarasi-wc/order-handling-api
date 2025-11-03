@@ -2,11 +2,14 @@
 
 namespace App\Domain\Orders\Models;
 
+use Database\Factories\RefundFactory;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Refund extends Model
 {
+    use HasFactory;
     protected $fillable = [
         'order_id',
         'refund_reference',
@@ -52,5 +55,13 @@ class Refund extends Model
     public function isPartialRefund(): bool
     {
         return $this->type === 'partial';
+    }
+
+    /**
+     * Create a new factory instance for the model
+     */
+    protected static function newFactory(): RefundFactory
+    {
+        return RefundFactory::new();
     }
 }
