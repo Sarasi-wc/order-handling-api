@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Domain\Orders\Console\ImportOrdersCommand;
+use App\Domain\Orders\Console\TestOrderWorkflowCommand;
 use Illuminate\Support\ServiceProvider;
 
 class DomainServiceProvider extends ServiceProvider
@@ -22,6 +23,7 @@ class DomainServiceProvider extends ServiceProvider
     {
         $this->commands([
             ImportOrdersCommand::class,
+            TestOrderWorkflowCommand::class,
         ]);
     }
 }
