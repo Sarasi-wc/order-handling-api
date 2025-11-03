@@ -120,7 +120,7 @@ Built `KPIService` and `LeaderboardService` using Redis:
 
 ```bash
 git clone <repository-url>
-cd next-ventures-assessment
+cd order-handling-api
 ```
 
 ### 2. Install PHP Dependencies
@@ -167,9 +167,6 @@ Create the database:
 ```bash
 # MySQL
 mysql -u root -p -e "CREATE DATABASE order_handling;"
-
-# PostgreSQL
-createdb order_handling
 ```
 
 ### 6. Configure Redis
@@ -435,17 +432,17 @@ Valid transitions are enforced by `OrderStatus::canTransitionTo()`.
 └──────────────────┬──────────────────────┘
                    ↓
 ┌─────────────────────────────────────────┐
-│              Default Queue               │
-│         (ImportOrdersJob)                │
+│              Default Queue              │
+│            (ImportOrdersJob)            │
 └──────────────────┬──────────────────────┘
                    ↓
 ┌─────────────────────────────────────────┐
-│              Orders Queue                │
-│      (ProcessOrderWorkflowJob)           │
-│   - ReserveStock                         │
-│   - SimulatePayment                      │
-│   - FinalizeOrder                        │
-│   - RollbackOrder (on failure)           │
+│              Orders Queue               │
+│      (ProcessOrderWorkflowJob)          │
+│   - ReserveStock                        │
+│   - SimulatePayment                     │
+│   - FinalizeOrder                       │
+│   - RollbackOrder (on failure)          │
 └──────────────────┬──────────────────────┘
                    ↓
         ┌──────────┴──────────┐
