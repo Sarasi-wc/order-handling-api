@@ -2,6 +2,8 @@
 
 namespace App\Domain\Orders\Models;
 
+use App\Domain\Orders\Enums\OrderStatus;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 
 class Order extends Model
@@ -20,8 +22,33 @@ class Order extends Model
     ];
 
     protected $casts = [
-        'quantity' => 'integer',
-        'unit_price' => 'float',
-        'order_date' => 'datetime',
+        'quantity'    => 'integer',
+        'unit_price'  => 'float',
+        'order_date'  => 'datetime',
+        'status'      => OrderStatus::class, // Enum cast
     ];
+
+    /**
+     * Computed attribute: check if order is completed.
+     */
+    protected function isCompleted(): Attribute
+    {
+        return Attribute::get(fn() => $this->status === OrderStatus::COMPLETED);
+    }
+
+    /**
+     * Domain rule: determine if transition is allowed.
+     */
+    public function canTransitionTo(OrderStatus $newStatus): bool
+    {
+        return $this->status->canTransitionTo($newStatus);
+    }
+
+    /**
+     * Derived total value (Value Object candidate).
+     */
+    protected function totalAmount(): Attribute
+    {
+        return Attribute::get(fn() => $this->quantity * $this->unit_price);
+    }
 }
